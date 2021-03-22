@@ -56,8 +56,8 @@ def SF_cyc_NMC(temp,soc_prof):
         sf_cyc+= sf_cr * sf_dod * sf_temp * sf_soc * fec
         sf_sor+= sf_cr_sor * sf_dod_sor * sf_soc_sor * fec
         
-    soc_g[0]=soc1
-    soc_g[-1]=soc2
+    soc_prof[0]=soc1
+    soc_prof[-1]=soc2
         
     return sf_cyc,sf_sor
 
