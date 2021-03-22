@@ -69,7 +69,7 @@ os.mkdir(dir_name+'\\'+fil_name)        # making folder to save the figures
 n = dir_name + '\\' + fil_name + '\\'
 
 # READING CSV FILES
-input_profile = np.array(pd.read_csv('fcrData.csv',header=None).values)     # CSV with power for every second of every day of the year/years (each second of the day in a new row, each day in a new column)
+input_profile = np.array(pd.read_csv('input.csv',header=None).values)     # CSV with power for every second of every day of the year/years (each second of the day in a new row, each day in a new column)
 temp = np.array(pd.read_csv('geneva temp data.csv').values)       # CSV file containing daily average temperature data for a whole year in Geneva (in °C)
 
 # '+' means power from the battery and '-' means power to the battery
@@ -111,7 +111,7 @@ ref_cal,ref_cyc,ref_sor = ref_NMC()             # setting the reference values f
 for j in range(days):
     
     temp1 = round(temp[j,0])                    # setting temperature for current day
-    prof[:] = input_profile[:,j]*12/100/bsize          # convert power profile to c-rate profile and copy to another array
+    prof[:] = input_profile[:,j]/bsize          # convert power profile to c-rate profile and copy to another array
     t1 = 1 / 3600                               # converting seconds to hours (required by model)
     sf_tempcal = SF_tempcal_NMC(temp1)          # calculating stress factor for temperature (calendar aging) for the desired chemistry
     
