@@ -1,11 +1,11 @@
 # Open-SESAME-ESReC
 Battery model 
 This folder contains most of the required files for running the code.
-1. Code.py: This is the code to compute the amount of battery degradation after a given profile is executed.
-2. geneva temp data.csv: This file contains the daily average temperature data for geneva, which is used to assign the temperature of the cell in the model
-3. NMC SOC-OCV 2.csv: This csv file contains the data for the soc-ocv curve. It contains the voltage at 1% SoC steps from 0% SoC to 100% SoC in the increasing order.
-4. ocv-soc extraction.py: This is the code used to extract the values for the soc-ocv curve (sr. no. 3)
-5. r_soc_temp_map.m: This is the matlab code used to extrapolate the resistance of the cell at different soc and temperature conditions given the resistance at a few of the conditions.
-6. r-soc-temp (extensive,1Hz).csv: This csv file contains the extrapolated values of the resistance of the cell at different conditions using the code above (sr. no. 5)
-7. Sample GITT.csv: This csv file contains the data that is taken as an input in the ocv-soc extraction code (sr. no. 4)
-8. SoH/SoR SF parameterization: These excel files show the methodology followed to derive the dependence of the stress factors on the various parameteres, which are then used to develop the degradation model
+1. main.py: This is the code which reads the parameters and csv files, calls a function for the calculation of the degradation and outputs the results.
+2. cycling.py: This is the code where the computation of the degradation of the cell takes place.
+3. NMC.py: This is a function package which contains the stress factor dependencies for the NMC chemistry. This is called by cycling.py when the cell chemistry is NMC.
+4. csv files: This is a folder which contains various csv files. 
+  i. sample temperature profile.csv: This file contains the daily average temperature data, which is used to assign the temperature of the cell in the model
+  ii. NMC SOC-OCV 2.csv: This csv file contains the data for the soc-ocv curve. It contains the voltage at 1% SoC steps from 0% SoC to 100% SoC in the increasing order.
+  iii. r-soc-temp (extensive,1Hz).csv: This csv file contains the extrapolated values of the resistance of the cell at different conditions using the code above (sr. no. 5)
+5. input parameters.xlsx: This excel files acts as a GUI which the user can enter various battery parameters such as the battery size, number of days to be simulated, cell chemistry as so on.
