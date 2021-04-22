@@ -56,10 +56,5 @@ class simulation_input():
         #length bigger than one
         return False  #todo: implement
 
-    #helper function during development, to be removed later
-    def add_dummy_data(self):
-        self.time_hours = np.arange(100)
-        self.current_A = np.random.rand(100)               
-        self.ambient_temperature_C = np.ones(100) * 25
         
    
