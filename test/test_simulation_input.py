@@ -15,7 +15,7 @@ class test_simulation_input(unittest.TestCase):
         dest.current_A = np.random.rand(size)               
         dest.ambient_temperature_C = np.ones(size) * 25
     
-    def testsetup(self):
+    def test_setup(self):
         #make sure we do not have an empty testinput
         self.assertGreater(len(self.testinput.time_hours),1)
         self.assertGreater(len(self.testinput.current_A),1)
@@ -28,9 +28,9 @@ class test_simulation_input(unittest.TestCase):
         new_input.read_csv('temp.csv')
         
         #check that new_input has same data as self.testinput 
-        self.assertTrue((self.testinput.time_hours == new_input.time_hours).all)
-        self.assertTrue((self.testinput.current_A == new_input.current_A).all)
-        self.assertTrue((self.testinput.ambient_temperature_C == new_input.ambient_temperature_C).all)
+        self.assertTrue(np.allclose(self.testinput.time_hours, new_input.time_hours))
+        self.assertTrue(np.allclose(self.testinput.current_A, new_input.current_A))
+        self.assertTrue(np.allclose(self.testinput.ambient_temperature_C,new_input.ambient_temperature_C))
         
    
         

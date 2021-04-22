@@ -15,7 +15,7 @@ class simulation_input():
         self.current_A = np.zeros(1)                  #current vector in Amps. Charge current positive, discharge negative
         self.ambient_temperature_C = np.zeros(1)      #ambient temperature vector in °C
 
-    #get data as pandas data frame
+    #get data as pandas data frame with time vector as index
     def get_as_dataframe(self):    
         data = {'time_hours': self.time_hours.tolist(),
                 'current_A':  self.current_A.tolist(),
@@ -24,7 +24,7 @@ class simulation_input():
         df = pd.DataFrame(data, columns = ['time_hours', 'current_A','ambient_temperature_C'])
         return df.set_index('time_hours')
 
-    #overwrites internal numpy values with data from pandas dataframe
+    #overwrites internal numpy values with data from pandas dataframe, expects time as index
     def restore_from_dataframe(self, inputframe):
         self.time_hours = np.array(inputframe.index)  
         self.current_A = np.array(inputframe['current_A'].tolist())                
