@@ -7,69 +7,79 @@ Created on Mon May 24 17:02:29 2021
 
 class Cell():
     
-    def __init__(self,initial_SoC,initial_Temp,Initial_SoR,inital_SoH,initial_Capacity,SoC_max,SoC_min,lim_Mode,Unom):
+    def __init__(self,initial_SoC,initial_Temp,Initial_SoR,initial_SoH,initial_Capacity,SoC_max,SoC_min,lim_Mode,Unom,initial_Q):
         
-        self.SoC=initial_SoC
-        self.Temp=initial_Temp
-        self.SoR=Initial_SoR
-        
-        self.Vinst=0
-        
-        self.act_Resistance=0
+        self.SoC=initial_SoC        #SoC of the battery gets updated in method CalSoC
+        self.Temp=initial_Temp      #Temperature of the battery must be updated externaly
+        self.SoR=Initial_SoR        #state of health of the Resistance must be updated externaly 
+        self.SoH=initial_SoH        #State of health of the battery (Capacity) must be updated externaly 
         
         
-        self.limCheckV=False
-        self.limCheckSoC=False
+        self.Vinst=0                #Current Voltage at the Cellpoles
+        self.act_Resistance=0       #Resitance at current operating condition 
         
-        self.Capacity=initial_Capacity
         
-        self.Cmax=SoC_max*initial_Capacity
-        self.Cmin=SoC_min*initial_Capacity
-        self.Unom=Unom
-        
-        self.SoC_max=SoC_max
+        self.limCheckV=False        #Variable contains information if a Voltage limit is reached 
+        self.limCheckSoC=False      #Variable contains information if a SoC limit is reached 
+       
+        self.Q=initial_Q                    #electric Charge of battery in Ah
+        self.Capacity=initial_Capacity      #Battery Capacity in kWh
+        self.SoC_max=SoC_max 
         self.SoC_min=SoC_min
+        self.Cmax=self.SoC_max*initial_Capacity  #max Capacity 
+        self.Cmin=self.SoC_min*initial_Capacity  #min Capacity 
+        self.Unom=Unom                      #Nominal Voltage of the battery 
         
-        
-        self.deltaC=0
-        self.deltaClost=0
-        self.updated_current=0
+
+        self.deltaC=0           #usable or used Energy of timestep   
+        self.updated_current=0  #Current of the timestep 
         
         #behavior when a limit is reached
         #Mode1=reject requested Power
         #Mode2=calculate highest possible Current 
         self.lim_Mode=lim_Mode
         
-        
-   
-    def CheckV(self,Resistance,Current,OCVoltage,Vmax,Vmin):
+        self.Crate =0 
         
         
+   #Check if the Voltage limites are reached under the current conditions
+   #Adjust or reject the requested Power 
+    def CheckV(self,Resistance,Power,OCVoltage,Vmax,Vmin):
+        
+        '''
+        Inputs:
+            -Resistance[Ohm], (Will be multiplied by the SoR)
+            -Power [kW], requested Power from the aplication (positiv = charging, negativ =discharge) 
+            -OCVoltage [V], Open circuit Voltage 
+            -Vmax [V], maximum allowed Voltage of Cell
+            -Vmin [V], minimal allowed Voltage of Cell 
+        '''
+        #Calculate the Crate
+        self.Crate=Power/self.Capacity
+        
+        #Calculate the Current 
+        self.updated_current=self.Crate*self.Q
+        
+        #Calculate the Resistance 
         self.act_Resistance=self.SoR*Resistance
         
-        
         #Voltage Calcultation 
-        self.Vinst=OCVoltage+(self.act_Resistance*Current)
+        self.Vinst=OCVoltage+(self.act_Resistance*self.updated_current)
         
-      
+        self.limCheckV=False
         #Upper Limit Voltage Check 
         if self.Vinst > Vmax:
+         
             
             self.limCheckV=True
-            
-        else:
-            self.limCheckV=False
-            
-        #Lower Limit Voltage Check 
-        if self.Vinst <Vmin:
-            
-            self.limCheckV=True
-            limitside=1
-        
-        else:
-            self.limCheckV=False
             limitside=2
         
+        #Lower Limit Voltage Check 
+        if self.Vinst <Vmin:
+       
+            self.limCheckV=True
+            limitside=1
+    
         #Update Current 
         if self.limCheckV == True:
             #Mode1
@@ -82,100 +92,106 @@ class Cell():
                 #discharge mode 
                 if limitside ==1:
                     self.updated_current=(Vmin-OCVoltage)/self.act_Resistance
+                    self.Vinst=Vmin
                 
                 #Charge mode
                 if limitside ==2:
                     self.updated_current=(Vmax-OCVoltage)/self.act_Resistance
+                    self.Vinst=Vmax
         else:
-            self.updated_current = Current   
-            
+            #Update Current 
+            self.updated_current = self.updated_current
+        
+        #Crate update 
+        self.Crate=self.updated_current/self.Q
+        
         return
     
 
-    def CalSoC(self,Current,deltaT):
+    def CalSoC(self,Power,deltaT,SoC_max,SoC_min):
 
+   
+
+        '''
+        Inputs:
+            -Power [kW], requested Power from the aplication (positiv = charging, negativ =discharge) 
+            -deltaT [Sec], timestep between measurements 
+        '''
+        self.SoC_max=SoC_max 
+        self.SoC_min=SoC_min
+        
+        
+        deltaT=deltaT/(60*60) #in hours 
+        
+        #Calculate the C-Rate 
+        self.Crate=Power/self.Capacity
+        
+        #Calculate the Power 
+        self.updated_current=self.Crate*self.Q
+        
         #Energy of current step 
-        self.deltaC=Current*deltaT*self.Unom
+        self.deltaC=self.updated_current*deltaT
         
-        #Energy lost over Resistance (current step)
-        self.deltaClost=Current*deltaT*self.act_Resistance
-        
-        #Energy of timestep
-        deltaCtot=self.deltaC+self.deltaClost
         
         #Update SoC
-        self.SoC=self.SoC+deltaCtot/self.Capacity
+        self.SoC=self.SoC+self.deltaC/self.Q
         
-    
+        
+        self.limCheckSoC=False
+        
         #Check SoC boundries
         if self.SoC > self.SoC_max:
             
             self.limCheckSoC=True
             limitside=1
-        else:
-            self.limCheckSoC=False
+            
                 
         if self.SoC < self.SoC_min:   
             limitside=2
             self.limCheckSoC=True  
-        else:
-            self.limCheckSoC=False
-            
-            
+        
         #Recalculation when SoC limits are reached
         if self.limCheckSoC == True: 
             if self.lim_Mode ==1:  
                 
                 #Reverse SoC calculation 
-                self.SoC=self.SoC-deltaCtot/self.Capacity
+                self.SoC=self.SoC-self.deltaC/self.Q
+                self.Crate=0
+                self.updated_current=0
+                self.deltaC=0
+                self.deltaClost=0
+                 
             
             if self.lim_Mode ==2: 
+               
+                self.deltaSoC=0
                 #Charge Mode limit
                 if limitside ==1:
                     #get old SoC
-                    self.SoC=self.SoC-deltaCtot/self.Capacity 
+                    self.SoC=self.SoC-self.deltaC/self.Q
                     #delta SoC
-                    deltaSoC=self.SoC_max-self.SoC
-                    deltaC=deltaSoC*self.Capacity
-                
-                    #Recalculate Current
-                    self.updated_current=deltaC/(deltaT*self.Unom+deltaT*self.act_Resistance)
+                    self.deltaSoC=self.SoC_max-self.SoC
+                    self.SoC=self.SoC_max
                     
+                    print("inside")
+                    print("delta_Soc:",self.deltaSoC)
+                   
+                    
+                  
                 #Discharge Mode limit 
                 if limitside ==2:
                     #get old SoC
-                    self.SoC=self.SoC-deltaCtot/self.Capacity 
+                    self.SoC=self.SoC-self.deltaC/self.Q
                     #delta SoC
-                    deltaSoC=self.SoC_min-self.SoC
-                    deltaC=deltaSoC*self.Capacity
-                
-                    #Recalculate Current
-                    self.updated_current=deltaC/(deltaT*self.Unom+deltaT*self.act_Resistance)
-                 
-            else:
-                self.updated_current=Current
-            
-        return              
-   
-
-
-
-
-
-
-
-
-
-    
-        
-
-            
-                        
-            
-            
-            
-            
-        
-        
-    
-    
+                    self.deltaSoC=self.SoC_min-self.SoC
+                    self.SoC=self.SoC_min
+              
+                #Recalculate deltaC 
+                self.deltaC=self.deltaSoC*self.Q
+                print("DeltaC:",self.deltaC)
+                #
+                self.updated_current=self.deltaC/deltaT
+                print("Current",self.updated_current)
+                self.Crate=self.updated_current/self.Q
+                print("Crate",self.Crate)
+        return
