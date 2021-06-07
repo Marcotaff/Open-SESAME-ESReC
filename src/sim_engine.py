@@ -5,14 +5,33 @@ Simulation Engine
 '''
 #import chemicallibrary_NMC
 import pandas as pd
+from cell import Cell
 import math
 
 #-----------------------------------------------------------------------------------------
-#Parameters 
+#Simulation Parameters 
 
 fraction_size=31  #amount of timestamps 
 select_fraction_type=1      #1 == fixed length
                             #2 == according to file
+initial_SoC =   0.77
+SoC_max =       0.8
+SoC_min =       0.0
+
+initial_Temp=   20
+
+Initial_SoR  =  1
+inital_SoH  =   1 
+initial_Capacity = 50 #kwh 
+
+lim_Mode  =     1
+Unom =          3.8 
+initial_Q=      10                            
+ 
+#-----------------------------------------------------------------------------------------
+#Built Cell element 
+Cell=Cell(initial_SoC,initial_Temp,Initial_SoR,inital_SoH,initial_Capacity,SoC_max,SoC_min,lim_Mode,Unom,initial_Q)                       
+
 #-----------------------------------------------------------------------------------------
 #Read input file 
 
@@ -67,12 +86,22 @@ for i in range(1,int(amount_fractions)+1):
         #Fraction the data 
         fraction_data=inputdata.loc[(inputdata['time'] >= start_index) & (inputdata['time'] <= end_index)]
         
+    #-----------------------------------------------------------------------------------------
+    #Performance Analysis
+    
+    #get resistance 
+    #Resistance=RfromTempSoC(soc, temp, r_ref)
+    Resistance=0.0001
+    
+    
+    Cell.CheckV(Resistance,data.Power.iloc[i],OCVoltage,Vmax,Vmin)
+    Cell.CalSoC(data.Power.iloc[i],deltaT,SoC_max,SoC_min)
         
-        #To do 
-        #Return simulation results of fraction 
-        #Add them to Resultarray
+        
+        
+        
   
-    print(fraction_data)
+ 
         
         
         
