@@ -7,7 +7,7 @@ Created on Mon May 24 17:02:29 2021
 
 class Cell():
     
-    def __init__(self,initial_SoC,initial_Temp,Initial_SoR,initial_SoH,initial_Capacity,SoC_max,SoC_min,lim_Mode,Unom,initial_Q):
+    def __init__(self,initial_SoC,initial_Temp,Initial_SoR,initial_SoH,initial_Capacity,lim_Mode,initial_Q):
         
         self.SoC=initial_SoC        #SoC of the battery gets updated in method CalSoC
         self.Temp=initial_Temp      #Temperature of the battery must be updated externaly
@@ -24,13 +24,8 @@ class Cell():
        
         self.Q=initial_Q                    #electric Charge of battery in Ah
         self.Capacity=initial_Capacity      #Battery Capacity in kWh
-        self.SoC_max=SoC_max 
-        self.SoC_min=SoC_min
-        self.Cmax=self.SoC_max*initial_Capacity  #max Capacity 
-        self.Cmin=self.SoC_min*initial_Capacity  #min Capacity 
-        self.Unom=Unom                      #Nominal Voltage of the battery 
         
-
+    
         self.deltaC=0           #usable or used Energy of timestep   
         self.updated_current=0  #Current of the timestep 
         
@@ -173,11 +168,7 @@ class Cell():
                     self.deltaSoC=self.SoC_max-self.SoC
                     self.SoC=self.SoC_max
                     
-                    print("inside")
-                    print("delta_Soc:",self.deltaSoC)
-                   
-                    
-                  
+        
                 #Discharge Mode limit 
                 if limitside ==2:
                     #get old SoC
@@ -186,12 +177,11 @@ class Cell():
                     self.deltaSoC=self.SoC_min-self.SoC
                     self.SoC=self.SoC_min
               
-                #Recalculate deltaC 
+                #Recalculate 
                 self.deltaC=self.deltaSoC*self.Q
-                print("DeltaC:",self.deltaC)
-                #
                 self.updated_current=self.deltaC/deltaT
-                print("Current",self.updated_current)
                 self.Crate=self.updated_current/self.Q
-                print("Crate",self.Crate)
+                
         return
+    
+    
