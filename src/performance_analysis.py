@@ -41,7 +41,6 @@ def performance_analysis(data,resultarray,SoC_max,SoC_min,lim_Mode):
     
     for x in range(0,len(data)):
         
-        print(x)
         #Temp --> later from functions
         Temp=data.temperature.iloc[x]
         
@@ -55,6 +54,8 @@ def performance_analysis(data,resultarray,SoC_max,SoC_min,lim_Mode):
         
         if x==0:
             deltaT=data.time.iloc[x]
+            
+        deltaT=60 #Sec
         
         Cell_Obj.CheckV(Resistance,data.power.iloc[x],OCVoltage,Vmax,Vmin)
         Cell_Obj.CalSoC(data.power.iloc[x],deltaT,SoC_max,SoC_min)
@@ -69,7 +70,7 @@ def performance_analysis(data,resultarray,SoC_max,SoC_min,lim_Mode):
     
         temp_results.loc[x,"Cell_Voltage"]=Cell_Obj.Vinst
         temp_results.loc[x,"Cell_Current"]=Cell_Obj.updated_current
-        temp_results.loc[x,"Cell_Resistant"]=Resistance
+        temp_results.loc[x,"Cell_Resistance"]=Resistance
         temp_results.loc[x,"Cell_OCV"]=OCVoltage
     
         temp_results["V_lim"]=Cell_Obj.limCheckV
