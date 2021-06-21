@@ -16,11 +16,11 @@ class chemicallibrary_NMC(chemicallibrary):
         self.refCyc = 0.0129
         self.refSor = 0.015
 
-    def OCVfromSoC(self, soc, v_ref):
+    def OCVfromSoC(self, soc):
         socConsider = ceil(soc)
         return v_ref[socConsider]
 
-    def RfromTempSoC(self, soc, temp, r_ref):
+    def RfromTempSoC(self, soc, temp):
         socConsider = ceil(soc)
         tempConsider = temp - (-20)
         return r_ref[tempConsider, socConsider]
@@ -41,11 +41,11 @@ class chemicallibrary_NMC(chemicallibrary):
         imp = 0.0875 * exp(0.0556 * temp)
         return imp
 
-    def SF_CycDod(self, dod):
+    def Imp_CycDod(self, dod):
         imp = 0.0002 * dod ** 2 - 0.0059 * dod + 0.9
         return imp
 
-    def SF_CycCrate(self, crate):
+    def Imp_CycCrate(self, crate):
         if cr > 0:  # charging
             imp = 0.0035 * exp(5.5465 * cr)
         else:  # discharging
@@ -60,7 +60,7 @@ class chemicallibrary_NMC(chemicallibrary):
         imp = 0.0742 * exp(0.026 * dod)
         return imp
 
-    def SF_SorCrate(self, crate):
+    def Imp_SorCrate(self, crate):
         if cr > 0:  # charging
             imp = 0.19 * exp(5.0548 * cr)  # stress factor for charging c-rate (sor increase)
         else:  # discharging
