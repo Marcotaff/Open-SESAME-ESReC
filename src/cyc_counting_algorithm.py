@@ -1,11 +1,14 @@
 
 import rainflow
 import numpy as np
+from scipy.signal import find_peaks as fp
+
+
 
 def Rainflow_mod(signal,Crate,Temp):
     
     '''
-    Return variables 
+    Return variables:
     
     column 0:Range of half-cycle
     column 1:Counting 1=full cycle 0=half cycle  
@@ -255,7 +258,7 @@ def Rainflow_mod(signal,Crate,Temp):
 def PeaktoPeak(signal,Crate,Temp):
      
     '''
-    Return variables 
+    Return variables: 
     
     column 0:Range of half-cycle
     column 1:Counting 1=full cycle 0=half cycle  
@@ -322,3 +325,12 @@ def PeaktoPeak(signal,Crate,Temp):
     return
 
   
+
+
+
+
+
+
+
+
+
