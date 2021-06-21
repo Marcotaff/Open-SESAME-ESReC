@@ -3,6 +3,7 @@ from abc import ABCMeta, abstractmethod
 import chemicallibrary
 import pandas as pd
 import numpy as np
+import math
 
 
 class chemicallibrary_NMC(chemicallibrary):
@@ -10,18 +11,18 @@ class chemicallibrary_NMC(chemicallibrary):
     def __init__(self):
         self.v_ref = np.array(pd.read_csv('NMC SOC-OCV 2.csv'))[:, 1]  # voltage values at different soc values from 0% to 100% SoC
         self.r_ref = np.array(pd.read_csv('r-soc-temp (extensive,1Hz).csv', header=None))
-        self.vMax = v_ref[-1]
-        self.vMin = v_ref[0]
+        self.vMax = self.v_ref[-1]
+        self.vMin = self.v_ref[0]
         self.refCal = 0.0149/86400
         self.refCyc = 0.0129
         self.refSor = 0.015
 
     def OCVfromSoC(self, soc, v_ref):
-        socConsider = ceil(soc)
+        socConsider = math.ceil(soc)
         return v_ref[socConsider]
 
     def RfromTempSoC(self, soc, temp, r_ref):
-        socConsider = ceil(soc)
+        socConsider = math.ceil(soc)
         tempConsider = temp - (-20)
         return r_ref[tempConsider, socConsider]
         
@@ -38,16 +39,16 @@ class chemicallibrary_NMC(chemicallibrary):
         return imp
 
     def Imp_CycTemp(self, temp):
-        imp = 0.0875 * exp(0.0556 * temp)
+        imp = 0.0875 * math.exp(0.0556 * temp)
         return imp
 
     def SF_CycDod(self, dod):
         imp = 0.0002 * dod ** 2 - 0.0059 * dod + 0.9
         return imp
 
-    def SF_CycCrate(self, crate):
+    def SF_CycCrate(self, cr):
         if cr > 0:  # charging
-            imp = 0.0035 * exp(5.5465 * cr)
+            imp = 0.0035 * math.exp(5.5465 * cr)
         else:  # discharging
             imp = 0.1112 * abs(cr) + 0.8219
         return imp
@@ -57,12 +58,12 @@ class chemicallibrary_NMC(chemicallibrary):
         return imp
 
     def Imp_SorDoD(self, dod):
-        imp = 0.0742 * exp(0.026 * dod)
+        imp = 0.0742 * math.exp(0.026 * dod)
         return imp
 
-    def SF_SorCrate(self, crate):
+    def SF_SorCrate(self, cr):
         if cr > 0:  # charging
-            imp = 0.19 * exp(5.0548 * cr)  # stress factor for charging c-rate (sor increase)
+            imp = 0.19 * math.exp(5.0548 * cr)  # stress factor for charging c-rate (sor increase)
         else:  # discharging
-            imp = 0.7986 * exp(0.5102 * abs(cr))
+            imp = 0.7986 * math.exp(0.5102 * abs(cr))
         return imp
