@@ -9,6 +9,8 @@ from cell import Cell
 import pandas as pd
 
 
+
+
 def performance_analysis(data,resultarray,SoC_max,SoC_min,lim_Mode):
 
     #create temp resultarray called:
