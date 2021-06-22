@@ -1,21 +1,21 @@
 
 from abc import ABCMeta, abstractmethod
-import chemicallibrary
+import chemicallibrary 
 import pandas as pd
 import numpy as np
 import math
 
 
-class chemicallibrary_NMC(chemicallibrary):
+class chemicallibrary_NMC(chemicallibrary.chemicallibrary):
 
     def __init__(self):
         self.v_ref = np.array(pd.read_csv('NMC SOC-OCV 2.csv'))[:, 1]  # voltage values at different soc values from 0% to 100% SoC
         self.r_ref = np.array(pd.read_csv('r-soc-temp (extensive,1Hz).csv', header=None))
         self.vMax = self.v_ref[-1]
         self.vMin = self.v_ref[0]
-        self.refCal = 0.0149/86400
-        self.refCyc = 0.0129
-        self.refSor = 0.015
+        self.refCal = 0.0149/86400 #In pers Seconds 
+        self.refCyc = 0.0129  #per full eq_cycle
+        self.refSor = 0.015 
 
     def OCVfromSoC(self, soc, v_ref):
         socConsider = math.ceil(soc)
@@ -51,6 +51,8 @@ class chemicallibrary_NMC(chemicallibrary):
             imp = 0.0035 * math.exp(5.5465 * cr)
         else:  # discharging
             imp = 0.1112 * abs(cr) + 0.8219
+            
+        imp=1 #test !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         return imp
 
     def Imp_SorAvgSoc(self, asoc):
