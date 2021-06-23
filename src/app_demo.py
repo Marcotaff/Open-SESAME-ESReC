@@ -20,3 +20,15 @@ output1 = sim_engine_function.simulation(data, default_params)
 output2 = sim_engine_function.simulation(data, own_params)
 
 #todo: do something with the output
+
+
+
+# def myInputManager():
+#     data = simulation_input()
+#
+#     data.temperature= getfromsomehwere and interpolate
+#     
+#     parameter = get_simulation_parameter()
+#     
+#     return data, parameter
+    
