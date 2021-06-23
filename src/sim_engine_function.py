@@ -88,6 +88,10 @@ def simulation(data,input_parameter):
             #Fraction the data 
             fraction_data=data.loc[(data['time'] >= start_index) & (data['time'] <= end_index)]
             
+            #select straight from numpy input data
+            #fraction_power = data.power_W[start_index:end_index]
+            #fraction_Tambient = data.ambient_temperature_C[start_index:end_index]
+            
             start_index=end_index+1
         
         #Fractioning mode 2
