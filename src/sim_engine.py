@@ -32,7 +32,7 @@ Initial_Q=      10
  
 #-----------------------------------------------------------------------------------------
 #Built Cell element 
-Cell=Cell(Initial_SoC,Initial_Temp,Initial_SoR,Initial_SoH,Initial_Capacity,lim_Mode,Initial_Q)                       
+                   
 
 #-----------------------------------------------------------------------------------------
 #Read input file 
@@ -106,7 +106,8 @@ for i in range(1,int(amount_fractions)+1):
     SoC_min=SoC_min
     lim_Mode=1
     
-    temps=performance_analysis(fraction_data,results,SoC_max,SoC_min,lim_Mode)
+    timeresolution=1 #SeC
+    temps=performance_analysis(fraction_data,results,SoC_max,SoC_min,lim_Mode,timeresolution)
   
     
     results=pd.concat([results, temps],ignore_index = True)

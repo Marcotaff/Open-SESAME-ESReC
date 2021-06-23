@@ -1,27 +1,11 @@
 
-from abc import ABCMeta, abstractmethod
+from abc import ABC, abstractmethod
 
-class chemicallibrary:
-    __metaclass__=ABCMeta
-
-    @abstractmethod
-    def ReadOCVcurve(self):
-        pass
+class chemicallibrary(ABC):
+    
 
     @abstractmethod
-    def ReadRcurve(self):
-        pass
-
-    @abstractmethod
-    def ReadReferenceDr(self):
-        pass
-
-    @abstractmethod
-    def GetVmax(self):
-        pass
-
-    @abstractmethod
-    def GetVmin(self):
+    def __init__(self):
         pass
 
     @abstractmethod
@@ -33,19 +17,19 @@ class chemicallibrary:
         pass
 
     @abstractmethod
-    def SF_CalSoC(self):
+    def Imp_CalSoC(self):
         pass
 
     @abstractmethod
-    def SF_CalTemp(self):
+    def Imp_CalTemp(self):
         pass
 
     @abstractmethod
-    def SF_CycAvgSoc(self):
+    def Imp_CycAvgSoc(self):
         pass
 
     @abstractmethod
-    def SF_CycTemp(self):
+    def Imp_CycTemp(self):
         pass
 
     @abstractmethod
@@ -57,11 +41,11 @@ class chemicallibrary:
         pass
 
     @abstractmethod
-    def SF_SorAvgSoc(self):
+    def Imp_SorAvgSoc(self):
         pass
 
     @abstractmethod
-    def SF_SorDoD(self):
+    def Imp_SorDoD(self):
         pass
 
     @abstractmethod

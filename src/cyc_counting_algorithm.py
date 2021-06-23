@@ -203,6 +203,8 @@ def Rainflow_mod(signal,Crate,Temp):
         
         for y in range(0,len(rf_list2)):
             
+            
+            
             if x !=y:
                 start_check=rf_list2[y,2]
                 end_check=rf_list2[y,3]
@@ -223,6 +225,8 @@ def Rainflow_mod(signal,Crate,Temp):
              
             Crate_piece=Crate[start:end]
             AVG_Crate=np.mean(Crate_piece)
+            
+           
             
             Temp_piece=Temp[start:end]
             AVG_Temp=np.mean(Temp_piece)
@@ -252,7 +256,9 @@ def Rainflow_mod(signal,Crate,Temp):
         rf_list2[x,7]= AVG_Temp 
         rf_list2[x,5]= AVG_Crate
         
-        return rf_list2
+        
+        
+    return rf_list2
 
 
 def PeaktoPeak(signal,Crate,Temp):
@@ -287,7 +293,7 @@ def PeaktoPeak(signal,Crate,Temp):
     peakandvalleys.sort()
     
     rf_list=[]
-    print(peakandvalleys)
+   
     
     for i in range(0,len(peakandvalleys)-1):
          
@@ -296,8 +302,7 @@ def PeaktoPeak(signal,Crate,Temp):
         end=peakandvalleys[i+1]
         
         
-        print("start",start)
-        print("end",end)
+       
         signal_piece=signal[start:end]
         Crate_piece=Crate[start:end]
         Temp_piece=Temp[start:end]
@@ -319,10 +324,12 @@ def PeaktoPeak(signal,Crate,Temp):
         h=AVG_Temp 
          
         rf_list.append([a,b,c,d,e,f,g,h])
+        
+    rf_list=np.array(rf_list)  
          
     return rf_list
   
-    return
+   
 
   
 
