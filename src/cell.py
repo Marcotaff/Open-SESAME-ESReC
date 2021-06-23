@@ -185,3 +185,23 @@ class Cell():
         return
     
     
+    def update(self,delta_SoH,delta_SoR):
+        
+        
+        self.SoH=self.SoH-delta_SoH
+        
+        self.SoR=self.SoR+delta_SoR
+        
+        #Update the Energy and the Capcacity 
+        
+        self.Capacity=self.Capacity*self.SoH
+        self.Q=self.Q*self.SoH
+        
+        
+        
+        
+        
+        
+        return 
+    
+    

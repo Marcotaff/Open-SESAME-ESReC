@@ -110,7 +110,6 @@ class degradation():
             deg_results[c,9]=     R_SoR_sum
             deg_results[c,10]=    Tot_Sor_cycle
         
-        
         #___________________________________________________________________________
         #Calendaric Degradation (for each timestamp)
         

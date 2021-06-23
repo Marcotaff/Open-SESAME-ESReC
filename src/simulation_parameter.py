@@ -5,7 +5,7 @@ import pandas as pd
 def get_simulation_parameter(nominal_energy, 
                              Cell_chemistry="NMC", 
                              timeresolution=1,
-                             repetition = 1,  
+                             repetition = 20,  
                              initial_SoC=1, SoC_max=1, SoC_min=0):
     
     parameter=pd.DataFrame()

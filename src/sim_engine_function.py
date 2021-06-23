@@ -16,39 +16,21 @@ import numpy as np
 
 def simulation(data,input_parameter):
     
-    input_parameter=input_parameter
-
-    #todo: why not use directly the variable input_parameter?
-    
-    fraction_size=              input_parameter.fraction_size  #resolutio
-    select_fraction_type=       input_parameter.select_fraction_type # remooving 
-    Initial_SoC=                input_parameter.initial_SoC
-    SoC_max=                    input_parameter.SoC_max
-    SoC_min=                    input_parameter.SoC_min
-    Initial_Temp=               input_parameter.initial_Temp
-    Initial_SoR=                input_parameter.initial_SoR
-    Initial_SoH=                input_parameter.initial_SoH
-    lim_Mode=                   input_parameter.lim_Mode # 
-    Unom=                       input_parameter.Unom
-    Initial_Q=                  input_parameter.initial_Q
-    Cell_chemistry=             input_parameter.Cell_chemistry
-    timeresolution=             input_parameter.timeresolution
-    
     #_______________________________________________________________________________________________
     # Building Class Objects 
     
     #Cell obj
-    Cell_Obj=Cell(Initial_SoC,Initial_Temp,Initial_SoR,Initial_SoH,input_parameter.nominal_energy,lim_Mode,Initial_Q)      
+    Cell_Obj=Cell(input_parameter.initial_SoC,input_parameter.initial_Temp,input_parameter.initial_SoR,input_parameter.initial_SoH,input_parameter.nominal_energy,input_parameter.lim_Mode,input_parameter.initial_Q)      
 
     #Degradation obj
-    Bat_deg= degradation(Cell_chemistry,timeresolution)
+    Bat_deg= degradation(input_parameter.Cell_chemistry,input_parameter.timeresolution)
 
     #_______________________________________________________________________________________________
     # Prepare input 
     
     inputdata_len=len(data.power_W)
 
-    amount_fractions=math.ceil(inputdata_len/fraction_size)
+    amount_fractions=math.ceil(inputdata_len/input_parameter.fraction_size)
        
     #_______________________________________________________________________________________________
     #Building fractions of input-data and looping threw
@@ -57,11 +39,18 @@ def simulation(data,input_parameter):
     
     Cyc_results=pd.DataFrame()
     deg_results=pd.DataFrame()
-  
+    
+    if input_parameter.repetition != 0:
+        
+        
+        for i in range(0,input_parameter.repetition):
+            
+            data.power_W=np.concatenate((data.power_W,data.power_W),axis=0)
+            data.ambient_temperature_C=np.concatenate((data.ambient_temperature_C,data.ambient_temperature_C),axis=0)
     
     for i in range(1,int(amount_fractions)+1):
         
-        end_index=start_index+fraction_size-1
+        end_index=start_index+input_parameter.fraction_size-1
             
         #Check if end_index in range of input_data
         if end_index > inputdata_len:
@@ -94,7 +83,7 @@ def simulation(data,input_parameter):
             Vmin=Bat_deg.Chemistry_obj.vMin
         
             Cell_Obj.CheckV(Resistance,fraction_power[x],OCVoltage,Vmax,Vmin)
-            Cell_Obj.CalSoC(fraction_power[x],timeresolution,SoC_max,SoC_min)
+            Cell_Obj.CalSoC(fraction_power[x],input_parameter.timeresolution,input_parameter.SoC_max,input_parameter.SoC_min)
             
             
             #save results of fracment
@@ -110,10 +99,10 @@ def simulation(data,input_parameter):
         
         #_______________________________________________________________________________________________
         #Update SoH and SoR 
+    
+        Cell_Obj.update(Bat_deg.delta_SoH/100,Bat_deg.delta_SoR/100)
         
-        Cell_Obj.SoH=Cell_Obj.SoH-Bat_deg.delta_SoH/100
-        Cell_Obj.SoR=Cell_Obj.SoR+Bat_deg.delta_SoR/100
-        
+        print(Cell_Obj.SoH)
     
         #_______________________________________________________________________________________________
         #Save Results 
