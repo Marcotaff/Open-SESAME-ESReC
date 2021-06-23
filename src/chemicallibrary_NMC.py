@@ -1,6 +1,4 @@
-
-from abc import ABCMeta, abstractmethod
-import chemicallibrary
+from chemicallibrary import chemicallibrary
 import pandas as pd
 import numpy as np
 import math

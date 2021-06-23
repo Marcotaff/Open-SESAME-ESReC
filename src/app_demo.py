@@ -6,8 +6,8 @@ import sim_engine_function
 
 
 
-default_params = simulation_parameter.get_simulation_parameter()
-own_params = simulation_parameter.get_simulation_parameter(initial_SoC=0.8, SoC_max=0.8, SoC_min=0.3)
+default_params = simulation_parameter.get_simulation_parameter(nominal_energy=200)
+own_params = simulation_parameter.get_simulation_parameter(nominal_energy=200,initial_SoC=0.8, SoC_max=0.8, SoC_min=0.3)
 
 
 data = simulation_input()

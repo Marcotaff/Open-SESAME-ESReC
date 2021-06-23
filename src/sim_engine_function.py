@@ -18,6 +18,8 @@ def simulation(data,input_parameter):
     
     input_parameter=input_parameter
 
+    #todo: why not use directly the variable input_parameter?
+    
     fraction_size=              input_parameter.fraction_size  #resolutio
     select_fraction_type=       input_parameter.select_fraction_type # remooving 
     Initial_SoC=                input_parameter.initial_SoC
@@ -26,7 +28,7 @@ def simulation(data,input_parameter):
     Initial_Temp=               input_parameter.initial_Temp
     Initial_SoR=                input_parameter.initial_SoR
     Initial_SoH=                input_parameter.initial_SoH
-    Initial_Capacity=           input_parameter.initial_Capacity #Nominal Capacity 
+    Initial_Capacity=           input_parameter.initial_Capacity #did you mean nominal energy? per cell or per battery?
     lim_Mode=                   input_parameter.lim_Mode # 
     Unom=                       input_parameter.Unom
     Initial_Q=                  input_parameter.initial_Q
