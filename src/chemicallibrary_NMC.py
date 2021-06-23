@@ -45,7 +45,7 @@ class chemicallibrary_NMC(chemicallibrary):
         return imp
 
     def Imp_CycCrate(self, crate):
-        if cr > 0:  # charging
+        if crate > 0:  # charging
             imp = 0.0035 * math.exp(5.5465 * crate)
         else:  # discharging
             imp = 0.1112 * abs(crate) + 0.8219
@@ -60,7 +60,7 @@ class chemicallibrary_NMC(chemicallibrary):
         return imp
 
     def Imp_SorCrate(self, crate):
-        if cr > 0:  # charging
+        if crate > 0:  # charging
             imp = 0.19 * math.exp(5.0548 * crate)  # stress factor for charging c-rate (sor increase)
         else:  # discharging
             imp = 0.7986 * math.exp(0.5102 * abs(crate))

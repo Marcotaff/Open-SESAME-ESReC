@@ -33,11 +33,11 @@ class chemicallibrary(ABC):
         pass
 
     @abstractmethod
-    def SF_CycDod(self):
+    def Imp_CycDod(self):
         pass
 
     @abstractmethod
-    def SF_CycCrate(self):
+    def Imp_CycCrate(self):
         pass
 
     @abstractmethod
@@ -49,7 +49,7 @@ class chemicallibrary(ABC):
         pass
 
     @abstractmethod
-    def SF_SorCrate(self):
+    def Imp_SorCrate(self):
         pass
 
 

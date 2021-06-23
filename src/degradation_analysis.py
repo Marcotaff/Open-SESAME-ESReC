@@ -75,8 +75,8 @@ class degradation():
             AVG_SoC=Cycle_results[c,4]
             
             #Compute Stressfactors 
-            SF_DoD=self.Chemistry_obj.SF_CycDod(DoD)
-            SF_Crate=self.Chemistry_obj.SF_CycCrate(Crate)
+            SF_DoD=self.Chemistry_obj.Imp_CycDod(DoD)
+            SF_Crate=self.Chemistry_obj.Imp_CycCrate(Crate)
             Imp_AVGSoC=self.Chemistry_obj.Imp_CycAvgSoc(AVG_SoC)
             Imp_Temp=self.Chemistry_obj.Imp_CycTemp(AVG_Temp)
             
@@ -88,7 +88,7 @@ class degradation():
             #SoR related stress factors (SF)
             
             R_SF_Dod=self.Chemistry_obj.Imp_SorDoD(DoD)
-            R_SF_Crate=self.Chemistry_obj.SF_SorCrate(Crate)
+            R_SF_Crate=self.Chemistry_obj.Imp_SorCrate(Crate)
             R_SF_AVGSoC=self.Chemistry_obj.Imp_SorAvgSoc(AVG_SoC)
             R_SoR_sum= R_SF_Dod*R_SF_Crate*R_SF_AVGSoC*cycle_equivalent
         

@@ -28,7 +28,6 @@ def simulation(data,input_parameter):
     Initial_Temp=               input_parameter.initial_Temp
     Initial_SoR=                input_parameter.initial_SoR
     Initial_SoH=                input_parameter.initial_SoH
-    Initial_Capacity=           input_parameter.initial_Capacity #did you mean nominal energy? per cell or per battery?
     lim_Mode=                   input_parameter.lim_Mode # 
     Unom=                       input_parameter.Unom
     Initial_Q=                  input_parameter.initial_Q
@@ -39,7 +38,7 @@ def simulation(data,input_parameter):
     # Building Class Objects 
     
     #Cell obj
-    Cell_Obj=Cell(Initial_SoC,Initial_Temp,Initial_SoR,Initial_SoH,Initial_Capacity,lim_Mode,Initial_Q)      
+    Cell_Obj=Cell(Initial_SoC,Initial_Temp,Initial_SoR,Initial_SoH,input_parameter.nominal_energy,lim_Mode,Initial_Q)      
 
     #Degradation obj
     Bat_deg= degradation(Cell_chemistry,timeresolution)
@@ -47,23 +46,10 @@ def simulation(data,input_parameter):
     #_______________________________________________________________________________________________
     # Prepare input 
     
-    inputdata_len=len(data)
-    
-    results=np.zeros((len(data),6))
-    
-    if select_fraction_type == 1:
-        
-        amount_fractions=math.ceil(inputdata_len/fraction_size)
+    inputdata_len=len(data.power_W)
+
+    amount_fractions=math.ceil(inputdata_len/fraction_size)
        
-    #Gets cleared 
-    if select_fraction_type == 2:
-        
-        print("not ready")
-        #path='//bfhfilerbe01.bfh.ch/blm8/Documents/MT/Open_Sesame/develeopment/variable_fractions.csv'
-        #fraction_steps_data = pd.read_csv(path, delimiter=';') 
-        
-        #amount_fractions=len(fraction_steps_data)
-      
     #_______________________________________________________________________________________________
     #Building fractions of input-data and looping threw
     
@@ -75,56 +61,40 @@ def simulation(data,input_parameter):
     
     for i in range(1,int(amount_fractions)+1):
         
-      
-        #Fractioning mode 2
-        if select_fraction_type == 1:
+        end_index=start_index+fraction_size-1
             
-            end_index=start_index+fraction_size-1
-            
-            #Check if end_index in range of input_data
-            if end_index > inputdata_len:
+        #Check if end_index in range of input_data
+        if end_index > inputdata_len:
                 end_index=inputdata_len
             
-            #Fraction the data 
-            fraction_data=data.loc[(data['time'] >= start_index) & (data['time'] <= end_index)]
             
-            #select straight from numpy input data
-            #fraction_power = data.power_W[start_index:end_index]
-            #fraction_Tambient = data.ambient_temperature_C[start_index:end_index]
+        #select straight from numpy input data
+        fraction_power = data.power_W[start_index:end_index]
+        fraction_Tambient = data.ambient_temperature_C[start_index:end_index]
             
-            start_index=end_index+1
+        start_index=end_index+1
         
-        #Fractioning mode 2
-        if select_fraction_type == 2:
-            
-            print("not ready")
-            #Read start and end index
-            #start_index=fraction_steps_data.start.iloc[i-1] 
-            #end_index=fraction_steps_data.end.iloc[i-1]
-        
-            #Fraction the data 
-            #fraction_data=inputdata.loc[(inputdata['time'] >= start_index) & (inputdata['time'] <= end_index)]
-        
-        
+  
         #_______________________________________________________________________________________________
         #Performance Analysis
-        temp_results_np=np.zeros((len(fraction_data),8)) #Create temperorary result array
+        temp_results_np=np.zeros((len(fraction_power),8)) #Create temperorary result array
         
-        for x in range(0,len(fraction_data)):
+        for x in range(0,len(fraction_power)):
         
-            power=fraction_data.power.to_numpy()
-            temperature=fraction_data.temperature.to_numpy()
+            #power=fraction_data.power.to_numpy()
+            #temperature=fraction_data.temperature.to_numpy()
     
-            print(temperature[x])
+            bat_temp=fraction_Tambient[x] # ambient temp == bat temp 
+    
             #Get circuit parameters 
-            r_ref=1 #??????????????????????
-            Resistance=1#Bat_deg.Chemistry_obj.RfromTempSoC(Cell_Obj.SoC,temperature[x],r_ref)
+            #r_ref=1 #??????????????????????
+            Resistance=1#Bat_deg.Chemistry_obj.RfromTempSoC(Cell_Obj.SoC,bat_temp,r_ref)
             OCVoltage=Bat_deg.Chemistry_obj.OCVfromSoC(Cell_Obj.SoC) #SoC value of the timestep before 
             Vmax=Bat_deg.Chemistry_obj.vMax
             Vmin=Bat_deg.Chemistry_obj.vMin
         
-            Cell_Obj.CheckV(Resistance,power[x],OCVoltage,Vmax,Vmin)
-            Cell_Obj.CalSoC(power[x],timeresolution,SoC_max,SoC_min)
+            Cell_Obj.CheckV(Resistance,fraction_power[x],OCVoltage,Vmax,Vmin)
+            Cell_Obj.CalSoC(fraction_power[x],timeresolution,SoC_max,SoC_min)
             
             
             #save results of fracment
@@ -136,7 +106,7 @@ def simulation(data,input_parameter):
         #_______________________________________________________________________________________________
         #degradation Analysis
     
-        Cyc_results_temp,deg_results_temp =Bat_deg.compute(temp_results_np[:,0],temp_results_np[:,1],temperature,start_index)
+        Cyc_results_temp,deg_results_temp =Bat_deg.compute(temp_results_np[:,0],temp_results_np[:,1],fraction_Tambient[:],start_index)
         
         #_______________________________________________________________________________________________
         #Update SoH and SoR 
@@ -144,8 +114,7 @@ def simulation(data,input_parameter):
         Cell_Obj.SoH=Cell_Obj.SoH-Bat_deg.delta_SoH/100
         Cell_Obj.SoR=Cell_Obj.SoR+Bat_deg.delta_SoR/100
         
-        print(Cell_Obj.SoH)
-        
+    
         #_______________________________________________________________________________________________
         #Save Results 
     
@@ -157,36 +126,6 @@ def simulation(data,input_parameter):
     
     return Cyc_results,deg_results
   
-
-
-'''
-##Test function 
-
-input_parameter=pd.DataFrame()
-input_parameter.fraction_size=100
-input_parameter.select_fraction_type=1
-input_parameter.initial_SoC=0.77
-input_parameter.SoC_max=0.8
-input_parameter.SoC_min=0.1
-input_parameter.initial_Temp=20
-input_parameter.initial_SoR=1
-input_parameter.initial_SoH=1
-input_parameter.initial_Capacity=50
-input_parameter.lim_Mode=1
-input_parameter.Unom=3.8
-input_parameter.initial_Q=10
-input_parameter.Cell_chemistry="NMC"
-input_parameter.timeresolution=1
-input_parameter.timeresolution=1
-
-
-path='//bfhfilerbe01.bfh.ch/blm8/Documents/MT/Open_Sesame/develeopment/test_input2.csv'
-data = pd.read_csv(path, delimiter=';')
-
-
-simulation(data,input_parameter)
-'''
-
 
 
 
