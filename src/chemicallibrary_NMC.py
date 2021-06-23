@@ -17,9 +17,9 @@ class chemicallibrary_NMC(chemicallibrary.chemicallibrary):
         self.refCyc = 0.0129  #per full eq_cycle
         self.refSor = 0.015 
 
-    def OCVfromSoC(self, soc, v_ref):
+    def OCVfromSoC(self, soc):
         socConsider = math.ceil(soc)
-        return v_ref[socConsider]
+        return self.v_ref[socConsider]
 
     def RfromTempSoC(self, soc, temp, r_ref):
         socConsider = math.ceil(soc)
