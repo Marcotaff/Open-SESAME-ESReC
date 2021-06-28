@@ -11,7 +11,7 @@ own_params = simulation_parameter.get_simulation_parameter(nominal_energy=200,in
 
 
 data = simulation_input()
-data.read_csv('temp.csv')       #read a an input object as csv
+data.read_csv('test3.csv')       #read a an input object as csv
 
 #for shubham:
 #data = myOwnInputManager()   #your fucntion should return a simulation_input object 

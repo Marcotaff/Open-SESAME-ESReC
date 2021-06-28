@@ -24,29 +24,42 @@ def simulation(data,input_parameter):
 
     #Degradation obj
     Bat_deg= degradation(input_parameter.Cell_chemistry,input_parameter.timeresolution)
-
-    #_______________________________________________________________________________________________
-    # Prepare input 
     
-    inputdata_len=len(data.power_W)
-
-    amount_fractions=math.ceil(inputdata_len/input_parameter.fraction_size)
-       
     #_______________________________________________________________________________________________
-    #Building fractions of input-data and looping threw
-    
-    start_index=1
+    #predefine output arrays
     
     Cyc_results=pd.DataFrame()
     deg_results=pd.DataFrame()
     
+    #_______________________________________________________________________________________________
+    #Repetition handler  
+
     if input_parameter.repetition != 0:
-        
-        
+    
         for i in range(0,input_parameter.repetition):
             
-            data.power_W=np.concatenate((data.power_W,data.power_W),axis=0)
-            data.ambient_temperature_C=np.concatenate((data.ambient_temperature_C,data.ambient_temperature_C),axis=0)
+            if i == 0:
+                
+                power_W_temp=data.power_W
+                temperature_C_temp=data.ambient_temperature_C
+                
+            else:
+                power_W_temp=np.concatenate((power_W_temp,data.power_W),axis=0)
+                temperature_C_temp=np.concatenate((temperature_C_temp,data.ambient_temperature_C),axis=0)
+        
+        data.power_W=power_W_temp
+        data.ambient_temperature_C=temperature_C_temp
+     
+    #_______________________________________________________________________________________________
+    # define amount of fractions  
+    
+    inputdata_len=len(data.power_W)
+    amount_fractions=math.ceil(inputdata_len/input_parameter.fraction_size)
+
+    start_index=1
+    
+    #_______________________________________________________________________________________________
+    # Looping threw fractions 
     
     for i in range(1,int(amount_fractions)+1):
         

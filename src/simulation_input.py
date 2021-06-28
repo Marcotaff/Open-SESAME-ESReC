@@ -34,7 +34,7 @@ class simulation_input():
 
     
     #reads data from a csv file
-    def read_csv(self, filename, separator=','):
+    def read_csv(self, filename, separator=';'):
         df=pd.read_csv(filename, sep=separator)  
         self.restore_from_dataframe(df)
 
