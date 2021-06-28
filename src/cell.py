@@ -34,7 +34,8 @@ class Cell():
         #Mode2=calculate highest possible Current 
         self.lim_Mode=lim_Mode
         
-        self.Crate =0 
+        self.Crate =0
+        self.Power_upd=0
         
         
    #Check if the Voltage limites are reached under the current conditions
@@ -99,6 +100,7 @@ class Cell():
         
         #Crate update 
         self.Crate=self.updated_current/self.Q
+        self.Power_upd=self.Crate*self.Capacity
         
         return
     
@@ -182,6 +184,9 @@ class Cell():
                 self.updated_current=self.deltaC/deltaT
                 self.Crate=self.updated_current/self.Q
                 
+                self.Power_upd=self.Crate*self.Capacity
+                
+
         return
     
     

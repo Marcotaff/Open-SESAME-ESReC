@@ -60,8 +60,13 @@ class chemicallibrary_NMC(chemicallibrary):
         return imp
 
     def Imp_SorCrate(self, crate):
+        
+        '''
         if crate > 0:  # charging
             imp = 0.19 * math.exp(5.0548 * crate)  # stress factor for charging c-rate (sor increase)
         else:  # discharging
             imp = 0.7986 * math.exp(0.5102 * abs(crate))
+        '''
+        
+        imp=1
         return imp

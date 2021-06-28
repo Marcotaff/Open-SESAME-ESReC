@@ -41,7 +41,7 @@ class simulation_input():
     
     #provides some statistical key values to check if the data correspond to the expectations
     def describe(self): 
-        df = self.get_as_dataframe()
+        df = self.Results.get_as_dataframe()
         return df.describe()
            
 
