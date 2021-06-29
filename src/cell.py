@@ -34,8 +34,14 @@ class Cell():
         #Mode2=calculate highest possible Current 
         self.lim_Mode=lim_Mode
         
+        if self.lim_Mode != 1 or self.lim_Mode != 2:
+            self.lim_Mode=2
+    
+        
         self.Crate =0
         self.Power_upd=0
+        
+        
         
         
    #Check if the Voltage limites are reached under the current conditions
@@ -66,7 +72,6 @@ class Cell():
         #Upper Limit Voltage Check 
         if self.Vinst > Vmax:
          
-            
             self.limCheckV=True
             limitside=2
         
@@ -81,6 +86,7 @@ class Cell():
             #Mode1
             if self.lim_Mode ==1:
                 self.updated_current=0
+                self.Vinst=OCVoltage
             
             #Mode 2     
             if self.lim_Mode ==2:
@@ -102,6 +108,7 @@ class Cell():
         self.Crate=self.updated_current/self.Q
         self.Power_upd=self.Crate*self.Capacity
         
+    
         return
     
 
@@ -183,8 +190,9 @@ class Cell():
                 self.deltaC=self.deltaSoC*self.Q
                 self.updated_current=self.deltaC/deltaT
                 self.Crate=self.updated_current/self.Q
-                
+              
                 self.Power_upd=self.Crate*self.Capacity
+                
                 
 
         return

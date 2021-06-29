@@ -7,6 +7,8 @@ from scipy.signal import find_peaks as fp
 
 def Rainflow_mod(signal,Crate,Temp):
     
+    
+    
     '''
     Return variables:
     
@@ -216,7 +218,7 @@ def Rainflow_mod(signal,Crate,Temp):
                     index_ingorelist.append([a,b])
                     
         index_ingorelist=np.array(index_ingorelist)             
-        
+       
         #Calc Crate of Cycle
         flag = not np.any(index_ingorelist)
         
@@ -226,22 +228,24 @@ def Rainflow_mod(signal,Crate,Temp):
             Crate_piece=Crate[start:end]
             AVG_Crate=np.mean(Crate_piece)
             
-           
-            
             Temp_piece=Temp[start:end]
             AVG_Temp=np.mean(Temp_piece)
        
         #If there are cycles in between 
         else:
+            
         
             Crate_mod=np.copy(Crate)
+            Crate_mod=Crate_mod.astype(np.float)
             Crate_mod[0:start]=np.nan
             Crate_mod[end:len(Crate_mod)]=np.nan
             
             Temp_mod=np.copy(Temp)
+            Temp_mod=Temp_mod.astype(np.float)
             Temp_mod[0:start]=np.nan
             Temp_mod[end:len(Temp_mod)]=np.nan
-           
+            
+        
             for i in range(0,len(index_ingorelist)):
                 
                 #initialise NAn everywhere where there are fullcycles 

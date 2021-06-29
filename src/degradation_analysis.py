@@ -15,7 +15,7 @@ from chemicallibrary_NMC import chemicallibrary_NMC
 
 class degradation():
     
-    def  __init__(self, Cell_chemistry,timeresolution):
+    def  __init__(self, Cell_chemistry,timeresolution,cyc_counting_alg):
 
         
         self.timeresolution=timeresolution
@@ -28,6 +28,11 @@ class degradation():
             
         self.delta_SoH=0
         self.delta_SoR=0
+        
+        self.cyc_counting_alg=cyc_counting_alg
+        
+        if self.cyc_counting_alg != 1 or self.cyc_counting_alg != 2:
+            self.cyc_counting_alg =1
 
 
     def compute(self,SoC_prof,Crate_prof,Temp_prof,startindex_fragment):
@@ -46,9 +51,18 @@ class degradation():
         #___________________________________________________________________________
         #Apply Cylce Counting algorithm 
         
-        Cycle_results=Rainflow_mod(SoC_prof,Crate_prof,Temp_prof)
-        #Cycle_results=PeaktoPeak(SoC_prof,Crate_prof,Temp_prof)
+        if  self.cyc_counting_alg==1:
+            Cycle_results=Rainflow_mod(SoC_prof,Crate_prof,Temp_prof)
         
+        if  self.cyc_counting_alg==2: 
+            Cycle_results=PeaktoPeak(SoC_prof,Crate_prof,Temp_prof)
+        
+
+        if len(Cycle_results) ==1:
+            if Cycle_results[0,5]==0:
+                
+                Cycle_results[0,:]=0
+                
         #___________________________________________________________________________
         #Create Result arrays
     
@@ -167,12 +181,19 @@ class degradation():
 
         columns = ['DoD','half/full','start_indx','end_indx','AVG_SoC','AVG_Crate','Info1','AVG_Temp','SF_DoD','SF_Crate','IMP_AVGSoC','Imp_Temp','SF_cyc_sum','Tot_cyc','R_SF_Dod','R_SF_Crate','R_SF_AVGSoC','R_SoR_sum','Tot_Sor_cycle']
         Cyc_Results = pd.DataFrame(Cyc_Results, columns = columns )    
-            
-        columns = ['SF_Cal_SoC','SF_Cal_Temp','Tot_Cal','ToT_Cyc','ToT_SoR','Sum_Deg']    
+         
+        
+
+        columns = ['SF_Cal_SoC','SF_Cal_Temp','Tot_Cal','ToT_Cyc','Sum_Deg','Tot_SoR']    
         Con_Results = pd.DataFrame(con_deg_results, columns = columns )     
-            
-  
+        
+    
         return Cyc_Results,Con_Results
+    
+    
+   
+        
+        
 
 
 
