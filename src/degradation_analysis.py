@@ -77,7 +77,7 @@ class degradation():
         for c in range(0,len(Cycle_results)):
        
             #Half/fullcycles
-            cycle_equivalent=Cycle_results[c,1]
+            cycle_equivalent=Cycle_results[c,1]*Cycle_results[c,0] #changed!!!!!!!!!!!
        
             #--------------------------------------------
             # Cycle related stress factors (SF)
@@ -165,8 +165,8 @@ class degradation():
         #___________________________________________________________________________
         #calculate delta SoH and delta_SoR of fragment  
         
-        self.delta_SoH=np.sum(con_deg_results[:,4])
-        self.delta_SoR=np.sum(con_deg_results[:,5])
+        self.delta_SoH=np.sum(con_deg_results[:,4])/100
+        self.delta_SoR=np.sum(con_deg_results[:,5])/100
         
         #___________________________________________________________________________
         #preparing the result array for the output , change to pandas dataframe 

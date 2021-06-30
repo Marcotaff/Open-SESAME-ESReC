@@ -72,7 +72,9 @@ def simulation(data,input_parameter):
   
         index_cyc= start_index
         start_index=end_index
-  
+        
+        progress=round((i/amount_fractions)*100,2)
+        print("progress:",progress,"%")
         #_______________________________________________________________________________________________
         #Performance Analysis
         temp_results_np=np.zeros((len(fraction_power),13)) #Create temperorary result array
@@ -109,7 +111,7 @@ def simulation(data,input_parameter):
         #_______________________________________________________________________________________________
         #Update SoH and SoR 
     
-        Cell_Obj.update(Bat_deg.delta_SoH/100,Bat_deg.delta_SoR/100)
+        Cell_Obj.update(Bat_deg.delta_SoH,Bat_deg.delta_SoR)
     
         
     
