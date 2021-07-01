@@ -1,4 +1,11 @@
 # Open-SESAME-ESReC
+
+#preparations
+install required python packages:  run 'pip install -r requirements.txt'
+
+
+
+#todo: update text to fit latest version
 Battery model 
 This folder contains most of the required files for running the code.
 1. Code.py: This is the code to compute the amount of battery degradation after a given profile is executed.
