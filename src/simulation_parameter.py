@@ -20,7 +20,7 @@ def get_simulation_parameter(nominal_energy,
     parameter.initial_SoR=1
     parameter.initial_SoH=1
     parameter.nominal_energy=nominal_energy  #Wh
-    parameter.lim_Mode=2               #select between one and two 
+    parameter.lim_Mode=1             #select between one and two 
     parameter.cyc_count_alg=1 #1= Rainflow, 2=Peakt to Peak
           
  
