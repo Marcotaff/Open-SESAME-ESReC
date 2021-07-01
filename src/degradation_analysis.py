@@ -197,39 +197,3 @@ class degradation():
 
 
 
-
-'''
-#Test_input
-input_parameters=pd.DataFrame()
-
-Cell_chemistry="NMC"
-timeresolution=1
-
-
-  
-data=pd.read_csv('//bfhfilerbe01.bfh.ch/blm8/Documents/MT/Open_Sesame/develeopment/test_Rainflow/test_rainflow.csv', delimiter=';')
-signal = data['power'].to_numpy()
-Crate  = data['crate'].to_numpy()
-Temp   = data['temp'].to_numpy()
-
-time = [4.0 * i / 200 for i in range(200 + 1)]
-signal = [(0.2 + 0.5 * sin(t) + 0.2 * cos(10*t) + 0.2 * sin(4*t))*0.5+0.2 for t in time]
-#signal = [0+1*t for t in time]
-
-signal=np.array(signal)
-
-Crate  = np.diff(signal)
-Crate=Crate*100
-
-signal=np.array(signal)
-Temp=signal*20+1
-
-
-startindx=200
-
-Bat_deg= degradation(Cell_chemistry,timeresolution)
-
-a,b=Bat_deg.compute(signal,Crate,Temp,startindx)
-
-'''
-

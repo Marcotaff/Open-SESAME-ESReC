@@ -13,6 +13,9 @@ import numpy as np
 
 def simulation(data,input_parameter):
     
+    data.power_W=data.power_W/1000
+    
+    
     #_______________________________________________________________________________________________
     # Building Class Objects 
     
@@ -98,8 +101,10 @@ def simulation(data,input_parameter):
             Cell_Obj.CheckV(Resistance,fraction_power[x],OCVoltage,Vmax,Vmin)
             Cell_Obj.CalSoC(Cell_Obj.Power_upd,input_parameter.timeresolution,input_parameter.SoC_max,input_parameter.SoC_min)
             
+            Cell_Obj.Power_upd=Cell_Obj.Power_upd*1000
+            
             #save results of fragment
-            temp_results_np[x]=[Cell_Obj.SoR,Cell_Obj.SoH,Cell_Obj.SoC,Cell_Obj.Crate,Cell_Obj.Power_upd,OCVoltage,Cell_Obj.Vinst,Cell_Obj.updated_current,Resistance,Cell_Obj.limCheckV,Cell_Obj.limCheckSoC,bat_temp,fraction_power[x]]
+            temp_results_np[x]=[Cell_Obj.SoR,Cell_Obj.SoH,Cell_Obj.SoC,Cell_Obj.Crate,Cell_Obj.Power_upd,OCVoltage,Cell_Obj.Vinst,Cell_Obj.updated_current,Resistance,Cell_Obj.limCheckV,Cell_Obj.limCheckSoC,bat_temp,fraction_power[x]*1000]
             
             
         temp_results = pd.DataFrame(temp_results_np, columns = ['SoR','SoH','SoC','Crate','power_upd','OCV_voltage','V_Bat','I_Updated','Resistance','limChekV','limCHeckSoC','Bat_temp','power_sim_in'])

@@ -12,12 +12,11 @@ import matplotlib.pyplot as plt
 plt.close('all')
 
 #default_params = simulation_parameter.get_simulation_parameter(nominal_energy=100)
-own_params = simulation_parameter.get_simulation_parameter(nominal_energy=100,initial_SoC=0.5, SoC_max=1, SoC_min=0)
+own_params = simulation_parameter.get_simulation_parameter(nominal_energy=100000,initial_SoC=1, SoC_max=1, SoC_min=0)
 
 #Define a input objet 
 data = simulation_input()
-data.read_csv('test6.csv')       #read a an input object as csv
-
+data.read_csv('test7.csv')       #read a an input object as csv
 
 
 #this way 
@@ -26,8 +25,6 @@ Results=simulation_output(sim_engine_function.simulation(data,own_params))
 
 Resultarray=Results.get_def_resultarray(own_params.initial_SoH,own_params.initial_SoH)
 Results.write_def_csv("outputtest.csv", separator=',')
-
-
 
 
 #Testplots
@@ -75,19 +72,18 @@ axs[0].legend(loc='upper right')
 axs[0].grid(True)
 
 
-'''
-axs[1].plot(Results.deg_results.Sum_Deg, label="Sum_deg")
-#axs[1].plot(Resultarray.Power_sim_input,label="root")
-axs[1].set_ylabel('Power [kW]')
+
+axs[1].plot(Resultarray.SoR_tot, label="SoR")
+axs[1].plot(Resultarray.SoR_feedback,label="feedback")
+axs[1].set_ylabel('SoR')
 axs[1].legend()
 axs[1].grid(True)
 
    
-axs[2].plot(Resultarray.OCV_Voltage,label="OCV")
-axs[2].plot(Resultarray.V_Bat,label="V_Bat")
-axs[2].set_ylabel('Voltage Bat')
+axs[2].plot(Resultarray.Resistance,label="Resistance")
+axs[2].set_ylabel('Resistance')
 axs[2].legend()
-'''
+
 
 plt.show()
 

@@ -34,10 +34,10 @@ class Cell():
         #Mode2=calculate highest possible Current 
         self.lim_Mode=lim_Mode
         
-        if self.lim_Mode != 1 or self.lim_Mode != 2:
+        if self.lim_Mode != 1 and self.lim_Mode != 2:
             self.lim_Mode=2
     
-        
+     
         self.Crate =0
         self.Power_upd=0
         
