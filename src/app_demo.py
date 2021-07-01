@@ -16,7 +16,7 @@ own_params = simulation_parameter.get_simulation_parameter(nominal_energy=100000
 
 #Define a input objet 
 data = simulation_input()
-data.read_csv('test7.csv')       #read a an input object as csv
+data.read_csv('test_inputdata.csv')       #read a an input object as csv
 
 
 #this way 
