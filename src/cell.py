@@ -24,7 +24,9 @@ class Cell():
        
         self.Q=initial_Q                    #electric Charge of battery in Ah
         self.Capacity=initial_Capacity      #Battery Capacity in kWh
-        
+        self.Q_ini = initial_Q               # initial electric charge of battery in Ah
+        self.Capacity_ini = initial_Capacity    # initial battery charge in kWh
+
     
         self.deltaC=0           #usable or used Energy of timestep   
         self.updated_current=0  #Current of the timestep 
@@ -207,11 +209,8 @@ class Cell():
         
         #Update the Energy and the Capcacity 
         
-        self.Capacity=self.Capacity*self.SoH
-        self.Q=self.Q*self.SoH
-        
-        
-        
+        self.Capacity=self.Capacity_ini*self.SoH
+        self.Q=self.Q_ini*self.SoH
         
         
         
