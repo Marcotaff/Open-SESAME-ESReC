@@ -22,6 +22,8 @@ class Cell():
         self.limCheckV=False        #Variable contains information if a Voltage limit is reached 
         self.limCheckSoC=False      #Variable contains information if a SoC limit is reached 
        
+        
+       
         self.Q=initial_Q                    #electric Charge of battery in Ah
         self.Capacity=initial_Capacity      #Battery Capacity in kWh
         self.Q_ini = initial_Q               # initial electric charge of battery in Ah
@@ -30,6 +32,9 @@ class Cell():
     
         self.deltaC=0           #usable or used Energy of timestep   
         self.updated_current=0  #Current of the timestep 
+        
+        self.act_Energy = self.SoC*self.Capacity
+        self.act_Q = self.SoC*self.Q
         
         #behavior when a limit is reached
         #Mode1=reject requested Power
@@ -195,7 +200,8 @@ class Cell():
               
                 self.Power_upd=self.Crate*self.Capacity
                 
-                
+        self.act_Energy = self.SoC*self.Capacity
+        self.act_Q = self.SoC*self.Q    
 
         return
     

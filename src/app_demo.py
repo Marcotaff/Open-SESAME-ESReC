@@ -12,15 +12,51 @@ import matplotlib.pyplot as plt
 plt.close('all')
 
 #default_params = simulation_parameter.get_simulation_parameter(nominal_energy=100)
-own_params = simulation_parameter.get_simulation_parameter(nominal_energy=100000,initial_SoC=1, SoC_max=1, SoC_min=0)
+own_params = simulation_parameter.get_simulation_parameter(nominal_energy=160,initial_SoC=0.55, SoC_max=1, SoC_min=0, SoH_repeatsim=0.01)
 
 #Define a input objet 
 data = simulation_input()
-data.read_csv('test_inputdata.csv')       #read a an input object as csv
+data.read_csv('test_inputdata3.csv')       #read a an input object as csv
 
 
+
+#output=sim_engine_function.quick_simulation(data,own_params)
+Sim_Results=simulation_output(sim_engine_function.quick_simulation(data,own_params))
+
+#Sim_Results.SoC_plt()
+Res1=Sim_Results.iteration_results(own_params.initial_SoH,own_params.initial_SoR)
+
+
+own_params = simulation_parameter.get_simulation_parameter(nominal_energy=160,initial_SoC=0.55, SoC_max=1, SoC_min=0, SoH_repeatsim=0)
+Sim_Results=simulation_output(sim_engine_function.quick_simulation(data,own_params))
+Res2=Sim_Results.iteration_results(own_params.initial_SoH,own_params.initial_SoR)
+
+
+delta=round(abs(Res2.SoH.iloc[-1]-Res1.SoH.iloc[-1]),2)
+print("Abweichung",delta)
+
+
+fig2, axs = plt.subplots()
+axs.scatter(Res1.calculation_iteration,Res1.SoH,label="Saprox_Sim")
+axs.plot(Res2.calculation_iteration,Res2.SoH,label="full_sim")
+axs.grid(True)
+axs.set_ylabel('SoH')
+axs.set_xlabel('Number of Iterations')
+axs.set_title('SOH calc deviation '+str(round(delta*100,2))+'%SoH')
+plt.legend()
+plt.show()
+
+
+
+
+
+
+
+'''
 #this way 
-Results=simulation_output(sim_engine_function.simulation(data,own_params))
+#Results=simulation_output(sim_engine_function.simulation(data,own_params))
+
+Results=simulation_output(sim_engine_function.quick_simulation(data,own_params))
 
 
 Resultarray=Results.get_def_resultarray(own_params.initial_SoH,own_params.initial_SoH)
@@ -28,6 +64,7 @@ Results.write_def_csv("outputtest.csv", separator=',')
 
 
 #Testplots
+
 
 fig1, axs = plt.subplots(3, 1, sharex=True)
     
@@ -40,6 +77,7 @@ axs[0].grid(True)
 
 
 
+019
 axs[1].plot(Resultarray.Power_updated, label="updated")
 axs[1].plot(Resultarray.Power_sim_input,label="root")
 axs[1].set_ylabel('Power [kW]')
@@ -89,6 +127,5 @@ plt.show()
 
 
 
-
-
+'''
 

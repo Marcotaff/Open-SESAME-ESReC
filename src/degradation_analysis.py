@@ -62,15 +62,16 @@ class degradation():
             if Cycle_results[0,5]==0:
                 
                 Cycle_results[0,:]=0
-                
+         
+       
         #___________________________________________________________________________
         #Create Result arrays
     
         leng=len(Cycle_results)
-        deg_results=np.zeros((leng,11))
+        deg_results=np.zeros((leng,19))
         
         leng=len(SoC_prof)
-        con_deg_results=np.zeros((leng,6))
+        con_deg_results=np.zeros((leng,10))
     
         #___________________________________________________________________________
         #Calc SF for every Cycle found 
@@ -101,6 +102,7 @@ class degradation():
             #--------------------------------------------
             #SoR related stress factors (SF)
             
+            
             R_SF_Dod=self.Chemistry_obj.Imp_SorDoD(DoD)
             R_SF_Crate=self.Chemistry_obj.Imp_SorCrate(Crate)
             R_SF_AVGSoC=self.Chemistry_obj.Imp_SorAvgSoc(AVG_SoC)
@@ -111,6 +113,7 @@ class degradation():
             #---------------------------------------------
             #Save SF results for each step
     
+            
             deg_results[c,0]=     SF_DoD
             deg_results[c,1]=     SF_Crate
             deg_results[c,2]=     Imp_AVGSoC
@@ -123,12 +126,24 @@ class degradation():
             deg_results[c,8]=     R_SF_AVGSoC  
             deg_results[c,9]=     R_SoR_sum
             deg_results[c,10]=    Tot_Sor_cycle
-        
+            
+            
+            deg_results[c,11]=    Cycle_results[c,0]
+            deg_results[c,12]=    Cycle_results[c,1]
+            deg_results[c,13]=    Cycle_results[c,2]
+            deg_results[c,14]=    Cycle_results[c,3]
+            deg_results[c,15]=    Cycle_results[c,4]
+            deg_results[c,16]=    Cycle_results[c,5]
+            deg_results[c,17]=    Cycle_results[c,6]
+            deg_results[c,18]=    Cycle_results[c,7]
+            
+      
         #___________________________________________________________________________
         #Calendaric Degradation (for each timestamp)
         
         for x in range(0,len(SoC_prof)):
             
+            #SoH Stressfactors 
             SoC=SoC_prof[x]
             SF_Cal_SoC=self.Chemistry_obj.Imp_CalSoC(SoC)
             
@@ -138,13 +153,25 @@ class degradation():
             #Total 
             Tot_cal=SF_Cal_SoC*SF_Cal_Temp*self.Chemistry_obj.refCal*self.timeresolution
             
+            #SoR Stressfactors
+            
+            R_SF_Cal_SoC=1
+            R_SF_Cal_Temp=1
+            
+            R_Tot_cal=1#R_SF_Cal_SoC*R_SF_Cal_Temp*self.Chemistry_obj.refCal*self.timeresolution #######Change needed! 
+            
+            
             #Save Results 
             con_deg_results[x,0]=     SF_Cal_SoC 
             con_deg_results[x,1]=     SF_Cal_Temp
             con_deg_results[x,2]=     Tot_cal
  
-        #___________________________________________________________________________
-         #Adding cycle results to the continious results 
+    
+            con_deg_results[x,7]=     R_SF_Cal_SoC 
+            con_deg_results[x,8]=     R_SF_Cal_Temp
+            con_deg_results[x,9]=     R_Tot_cal
+            #___________________________________________________________________________
+             #Adding cycle results to the continious results 
           
             index=np.asarray(np.where(Cycle_results[:,3]==x))
             first=index[0]
@@ -153,7 +180,7 @@ class degradation():
                  index=int(first[0])
                  con_deg_results[x,3]=deg_results[index,5]  #TOT_cyc
                  con_deg_results[x,5]=deg_results[index,10] #TOT SoR 
-                 
+
             else:
                 con_deg_results[x,3]=0
                 con_deg_results[x,5]=0  #Tot_SoR
@@ -161,6 +188,7 @@ class degradation():
         #Sum them together 
         con_deg_results[:,4]=con_deg_results[:,3]+con_deg_results[:,2] #Sum Cal and Cyc aging          
         
+        con_deg_results[:,6]=con_deg_results[:,5]+con_deg_results[:,9] #Sum Cal and Cyc aging 
       
         #___________________________________________________________________________
         #calculate delta SoH and delta_SoR of fragment  
@@ -173,22 +201,12 @@ class degradation():
         
         #Updating the Index of cycle Results according to the inputdata as a hole 
         
-        Cyc_Results=np.concatenate((Cycle_results,deg_results),axis=1)
-      
-        Cyc_Results[:,2]=Cyc_Results[:,2]+int(startindex_fragment) 
-        Cyc_Results[:,3]=Cyc_Results[:,3]+int(startindex_fragment)
-
-
-        columns = ['DoD','half/full','start_indx','end_indx','AVG_SoC','AVG_Crate','Info1','AVG_Temp','SF_DoD','SF_Crate','IMP_AVGSoC','Imp_Temp','SF_cyc_sum','Tot_cyc','R_SF_Dod','R_SF_Crate','R_SF_AVGSoC','R_SoR_sum','Tot_Sor_cycle']
-        Cyc_Results = pd.DataFrame(Cyc_Results, columns = columns )    
-         
-        
-
-        columns = ['SF_Cal_SoC','SF_Cal_Temp','Tot_Cal','ToT_Cyc','Sum_Deg','Tot_SoR']    
-        Con_Results = pd.DataFrame(con_deg_results, columns = columns )     
-        
     
-        return Cyc_Results,Con_Results
+        deg_results[:,2]=deg_results[:,2]+int(startindex_fragment) 
+        deg_results[:,3]=deg_results[:,3]+int(startindex_fragment)
+
+        
+        return deg_results,con_deg_results
     
     
    
