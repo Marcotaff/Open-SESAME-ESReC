@@ -67,7 +67,7 @@ class simulation_output():
         
         length=len(self.pref_results)
         
-        Results=np.zeros((length,7))
+        Results=np.zeros((length,9))
         
         
         
@@ -90,27 +90,31 @@ class simulation_output():
         
             if x ==0:
 
-                Results[x,2]=start_SoH-temp.SoH_ToT_Cyc.sum()/100 #SoH_cyc
-                Results[x,3]=start_SoH-temp.SoH_ToT_Cal.sum()/100 #SoH_cal
-                Results[x,4]=start_SoH-temp.SoH_ToT_Cal.sum()/100-temp.SoH_ToT_Cyc.sum()/100 #Total SoH
+                Results[x,2]=start_SoH#temp.SoH_ToT_Cyc.sum()/100 #SoH_cyc
+                Results[x,3]=start_SoH#temp.SoH_ToT_Cal.sum()/100 #SoH_cal
+                Results[x,4]=start_SoH#temp.SoH_ToT_Cal.sum()/100-temp.SoH_ToT_Cyc.sum()/100 #Total SoH
                 
-                
-                
-                Results[x,5]=start_SoR+temp.SoR_ToT_Cyc.sum()/100 #SoR
+                Results[x,7]=start_SoR#temp.SoR_Tot_cal.sum()/100 #SoH_cyc
+                Results[x,8]=start_SoR#temp.SoR_ToT_Cyc.sum()/100#SoH_cal
+                Results[x,5]=start_SoR#(temp.SoR_ToT_Cyc.sum()/100+temp.SoR_Tot_cal.sum()/100)
             
             else:
+                
                 
                 Results[x,2]=Results[x-1,2]-(temp.SoH_ToT_Cyc.sum()/100)* delta_iteration #SoH_cyc
                 Results[x,3]=Results[x-1,3]-(temp.SoH_ToT_Cal.sum()/100 )*delta_iteration#SoH_cal
                 Results[x,4]=Results[x-1,4]-(temp.SoH_ToT_Cal.sum()/100-temp.SoH_ToT_Cyc.sum()/100)* delta_iteration #Total SoH
                 
                 
+                Results[x,7]=Results[x-1,7]+temp.SoR_Tot_cal.sum()/100*delta_iteration #SoH_cyc
+                Results[x,8]=Results[x-1,8]+temp.SoR_ToT_Cyc.sum()/100*delta_iteration#SoH_cal
+                Results[x,5]=Results[x-1,5]+(temp.SoR_ToT_Cyc.sum()/100+temp.SoR_Tot_cal.sum()/100)*delta_iteration#SoR 
                 
-                Results[x,5]=Results[x-1,5]+(temp.SoR_ToT_Cyc.sum()/100)*delta_iteration#SoR
                 
-        
+                
+                
         #Save as PD Dataframe 
-        columns = ['SoH','SoR','SoH_cyc','SoH_cal','Tot_SoH','SoR_Tot','calculation_iteration']    
+        columns = ['SoH','SoR','SoH_cyc','SoH_cal','Tot_SoH','SoR_Tot','calculation_iteration','SoR_Cal','SoR_Cyc']    
         Results = pd.DataFrame( Results, columns = columns )        
         
        

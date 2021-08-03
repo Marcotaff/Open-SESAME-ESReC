@@ -94,7 +94,9 @@ def simulation(data,input_parameter):
                 
                 #Get circuit parameters 
                 Resistance=Bat_deg.Chemistry_obj.RfromTempSoC(Cell_Obj.SoC,bat_temp)
-                OCVoltage=Bat_deg.Chemistry_obj.OCVfromSoC(Cell_Obj.SoC) #SoC value of the timestep before 
+                
+                
+                OCVoltage=Bat_deg.Chemistry_obj.OCVfromSoC(Cell_Obj.SoC) #SoC value of the timestep before SoC 0-1 
                 Vmax=Bat_deg.Chemistry_obj.vMax
                 Vmin=Bat_deg.Chemistry_obj.vMin
             
@@ -113,6 +115,9 @@ def simulation(data,input_parameter):
             #_______________________________________________________________________________________________
             #Update SoH and SoR 
             Cell_Obj.update(Bat_deg.delta_SoH,Bat_deg.delta_SoR)
+            
+            print(Bat_deg.delta_SoR)
+            
             
             #_______________________________________________________________________________________________
             #Save Results 
@@ -134,21 +139,25 @@ def simulation(data,input_parameter):
         delta_SoH=start_SoH-Cell_Obj.SoH
         delta_SoR=Cell_Obj.SoR-start_SoR
         
+        
+        
         #keep simulated SoC for the next repetition or not 
         if input_parameter.keep_rep_SoC == 0:
             Cell_Obj.SoC=input_parameter.initial_SoC
         
         #_______________________________________________________________________________________________
         #Save Results in pandas Dataframe 
-        columns = ['SF_DoD','SF_Crate','SF_AVGSoC','SF_Temp','SF_cyc_sum','Tot_SoH_cyc','R_SF_DoD','R_SF_Crate','R_SF_AVGSoC','R_SoR_Sum','Tot_SoR_cycle','CC_DoD','CC_Full_half_c','CC_startindex','CC_endindex','CC_AVG_SoC','CC_AVG_Crate','CC_info','CC_AVG_Temp']  
+        columns = ['SF_DoD','SF_Crate','SF_AVGSoC','SF_Temp','SF_cyc_sum','Tot_SoH_cyc','R_SF_DoD','R_SF_Crate','R_SF_AVGSoC','R_SF_Temp','R_SoR_Sum','Tot_SoR_cycle','CC_DoD','CC_Full_half_c','CC_startindex','CC_endindex','CC_AVG_SoC','CC_AVG_Crate','CC_info','CC_AVG_Temp']  
         Cyc_results = pd.DataFrame(Cyc_results, columns = columns )  
         Cyc_results["calculation_iteration"]=act_repetition
         
         
-        columns = ['SF_Cal_SoC','SF_Cal_Temp','SoH_ToT_Cal','SoH_ToT_Cyc','SoH_sum_degr','SoR_ToT_Cyc','SoR_sum_degr','R_SF_Cal_SoC','R_SF_Cal_Temp','R_Tot_cal']
+        columns = ['SF_Cal_SoC','SF_Cal_Temp','SoH_ToT_Cal','SoH_ToT_Cyc','SoH_sum_degr','SoR_ToT_Cyc','SoR_sum_degr','R_SF_Cal_SoC','R_SF_Cal_Temp','SoR_Tot_cal']
         deg_results = pd.DataFrame(deg_results, columns = columns )  
         deg_results["calculation_iteration"]=act_repetition
-
+        
+        
+     
         columns = ['SoR','SoH','SoC','Crate','power_upd','OCV_voltage','V_Bat','I_Updated','Resistance','limChekV','limCHeckSoC','Bat_temp','power_sim_in','Act_Energy','Act_Q']
         performance_results = pd.DataFrame(performance_results, columns = columns )
         performance_results["calculation_iteration"]=act_repetition
@@ -163,6 +172,7 @@ def simulation(data,input_parameter):
         print("---------------------------------------")
         print("Current iteration:", act_repetition,'/', input_parameter.iteration )
         print("Current Battery SoH:",round(performance_results.SoH.iloc[-1]*100,2),'%') 
+        print("Current Battery SoR:",round(performance_results.SoR.iloc[-1],2),'[]')
         
         #_______________________________________________________________________________________________
         #Simulation controll 

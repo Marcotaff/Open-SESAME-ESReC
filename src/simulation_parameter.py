@@ -6,15 +6,16 @@ from sys import exit
 def get_simulation_parameter(nominal_energy, 
                              Cell_chemistry="NMC", 
                              timeresolution=60,
-                             iteration =500, #Anzahl Berechnungen  
+                             iteration =1000, #Anzahl Berechnungen  
                              initial_SoC=0.5, SoC_max=1, SoC_min=0,
-                             SoH_repeatsim=0.0
+                             SoH_repeatsim=0.01
                              ):
     
     parameter=pd.DataFrame()
     
     #SoC related Parameters 
     parameter.SoC_max=SoC_max
+
     parameter.SoC_min=SoC_min 
     parameter.initial_SoC=initial_SoC
     
@@ -27,7 +28,7 @@ def get_simulation_parameter(nominal_energy,
     #Simulation Parameters 
     parameter.timeresolution=timeresolution   
     parameter.iteration = iteration 
-    parameter.fraction_size=1400
+    parameter.fraction_size=1440
     parameter.lim_Mode=2             #select between one and two 
     parameter.cyc_count_alg=1 #1= Rainflow, 2=Peakt to Peak
     parameter.SoH_repeatsim=SoH_repeatsim  
